@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>登陆界面</title>
+	<link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link href="https://v3.bootcss.com/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="https://v3.bootcss.com/examples/signin/signin.css" rel="stylesheet">
+</head>
+<body>
+	<div class="container">
+    <form class="form-signin" th:action="@{login.do}" method=post>
+        <h2 class="form-signin-heading">后台管理界面</h2>
+        <label for="username" class="sr-only">登录名</label>
+        <input type="text" id="username" name="username" class="form-control" th:value="${username}" placeholder="请输入您的用户名" required="required" autofocus>
+        <label for="password" class="sr-only">密&nbsp;码</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="请输入您的密码" required="required">
+        <button id="btnLogin" class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+        <h3 style="color: red" th:text="${error}" ></h3>
+    </form>
+	</div> <!-- /container -->
+
+	<script src="https://v3.bootcss.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+	<script th:src="@{/js/jquery.js}"></script>
+	<script th:src="@{/js/bootstrap.js}"></script>
+	<script src="https://v3.bootcss.com/assets/js/ie-emulation-modes-warning.js"></script>
+
+</body>
+</html>

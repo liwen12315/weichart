@@ -1,0 +1,12 @@
+com\lw\config\ShiroConfig.class
+com\lw\shiro\AuthRealm.class
+com\lw\config\MyBatisPlusConfig.class
+com\lw\controller\GoodsController.class
+com\lw\controller\LoginController.class
+com\lw\controller\callback\WxPayController.class
+com\lw\config\WebConfig.class
+com\lw\controller\IndexController.class
+com\lw\Application.class
+com\lw\interceptor\LoginInterceptor.class
+com\lw\controller\OrderController.class
+com\lw\config\RedisSessionConfig.class

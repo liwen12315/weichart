@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>微分销自媒体平台</title>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/qrcode.min.js}"></script>
+</head>
+<body>
+
+<div>
+    <div id="d"></div>
+    <input type="hidden" id="orderId" th:value="${order.id}">
+    <label>
+        	收件人姓名:
+        <span th:text="${order.name}"></span>
+    </label>
+</div>
+<div>
+    <label>
+        	收件人电话号码:
+        <span th:text="${order.phone}"></span>
+    </label>
+</div>
+
+<div>
+    <label>
+        	收件人详细地址:
+        <span th:text="${order.address}"></span>
+    </label>
+</div>
+
+<div>
+    <label>
+        	购买数量:
+        <span th:text="${order.num}"></span>
+    </label>
+</div>
+
+<div>
+    <label>
+        	总金额:
+        <span th:text="${order.num*order.price}"></span>
+    </label>
+</div>
+
+<div id="qrcode" style="width:165px; height:165px; margin-top:15px;"></div>
+	
+	<script type="text/javascript">
+	    var qrcode = new QRCode(document.getElementById("qrcode"), {
+	        width: 165,
+	        height: 165
+	    });
+		
+	  	//生成二维码
+	    $(function () {
+	        var orderId = $("#orderId").val();
+	        post("order/getQR", {"id": orderId}, function (result) {
+	            qrcode.makeCode(result.data);
+	        });
+	
+	       // var i = null;
+	       // i = setInterval(function () {
+	       //     post("order/getPayStatus", {"id": orderId}, function (result) {
+	       //         if (result.data === "paid") {
+	       //              clearInterval(i);
+	       //             reload(base + "order/list");
+	      //          }
+	      //      });
+	     //   }, 1000);
+	    });
+	</script>
+
+ <button type="button" class="c_txt orange_bg"  onclick="backToGoodsList()">返回订单页</button>	
+	<script type="text/javascript">
+	
+		//返回定单列表
+		function backToGoodsList() {
+			 var orderId = $("#orderId").val();
+			post("order/getPayStatus", {"id": orderId}, function (result) {
+                if (result.data === "paid") {
+                	$("#serch").show();
+                    reload(base + "order/list");
+                }
+                if(confirm("未完成支付是否退出？")){
+                	$("#serch").show();
+                	reload(currenturl);
+                }
+           
+            });    
+		}
+	
+	</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.lw.mapper.AdminModuleRoleMapper">
+   
+    <resultMap id="viewTree" type="com.lw.entity.vo.TreeView">
+        <result property="id" column="parent_id" />
+        <result property="text" column="parent_name"/>
+        <result property="href" column="parent_url"/>
+        <collection property="nodes" ofType="com.lw.entity.vo.TreeView">
+            <result property="id" column="id"/>
+            <result property="text" column="name"/>
+            <result property="href" column="url"/>
+        </collection>
+
+    </resultMap>
+
+    <select id="getByAdminId" resultMap="viewTree">
+    SELECT DISTINCT
+    	   m.id,
+    	   m.order_num,
+           m.name,
+           m.url,
+           mp.id parent_id,
+           mp.name parent_name,
+           mp.url parent_url
+           from admin a
+           left outer JOIN admin_role r on a.role_id =r.id
+           left outer join admin_module_role mr on mr.admin_role_id = r.id
+		   left outer join admin_module m on m.id=mr.admin_module_id
+		   left OUTER join admin_module mp on mp.id = m.parent_id
+		   WHERE a.role_id = #{id} 
+		   AND m.parent_id != 0 
+		   ORDER BY m.order_num ASC;
+    </select>
+</mapper>

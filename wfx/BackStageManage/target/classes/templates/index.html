@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>微分销平台</title>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/default.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<!--导航条-->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-2" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">微分销平台管理系统</a>
+        </div>
+    </div>
+</nav>
+<!--导航条结束-->
+
+<div class="container-fluid">
+    <!--左边-->
+    <div id="left" class="col-md-2">
+        <div id="treeview1" class=""></div>
+    </div>
+    <!--右边-->
+    <div align="center" id="serch" style="margin:15px;" hidden>
+		<input type="text" id="query" placeholder="请输入查询内容" value=""/><button  type="button" id="btn">查询</button>
+	</div>
+   	<div id="right" class="col-md-10">
+	</div>
+</div>
+
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+<script th:src="@{/js/bootstrap-treeview.js}"></script>
+
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var base = /*[[@{/}]]*/ ''; //获取context-path
+    /*]]>*/
+    var url = "";
+    var currenturl = url+"";
+    var goodsTypeId = -1;                //物品种类默认为-1, 即查全部
+    var pageId = 1;						 // 默认分页去第一页
+</script>
+
+<script type="text/javascript">
+
+    //刷新方法 当执行升级或者更新删除操作后刷新
+    function reload(address) {
+        if (address == ""||address == null) {
+            address = url;
+        }
+        $("#right").load(address);
+        $(".modal-backdrop").remove();
+    }
+
+	
+    function post(posturl, jsonData, success, error) {
+        $.post(base + posturl,
+            jsonData,
+            function (data) {
+                if (data.ok) { 
+                    if (success) success(data); 
+                } else { 
+                    if (error) error(data); else alert(data.data);
+                }
+            });
+    }
+
+    $(function () {
+        post("fun-list", null, function (result) {
+            
+            $('#treeview1').treeview({
+                data: result.data,
+                levels: 0
+            });
+
+            $("#treeview1").on("nodeSelected", function (event, data) {
+                var u = data.href.toString();	//从后台获取地址
+                if(u != null){
+                	$("#query").val("");
+            		$("#serch").show();         	//显示搜索框
+                }
+                if(u == ""){
+                	$("#query").val("");
+                	$("#serch").hide();
+                }
+                var id = -1;
+                if ( $("#goodsTypeId").length > 0 ) {
+                	 id =$("#goodsTypeId").val();
+                }									//若果是带ID查询(查询goods)会用到
+                
+            
+            	var query =$("#query").val();	//获取搜索框的内容
+                
+                    url=u;						//将获取到的地址赋值给URL
+                    console.log(u);
+                    $("#right").load(u+"?query="+query+"&goodsTypeId="+id);  //载入页面（附带搜索的参数）
+               
+            });
+        });
+        
+        //搜索功能
+        $("#btn").click(function(){
+            var query =$("#query").val();    //关键字
+            
+            if (url.length > 0) {
+            	currenturl = url+"?query="+query+"&goodsTypeId="+goodsTypeId+"&pageId="+pageId;
+                $("#right").load(currenturl);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: wfx_WeMedia
+  http:
+    encoding:
+      force: true
+      enabled: true
+      charset: utf-8
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+  aop:
+    proxy-target-class: true
+  jmx:
+    default-domain: ${spring.application.name}
+  datasource:
+    platform: mysql
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.209.131:3306/wfx?serverTimezone=CTT&characterEncoding=utf8&useUnicode=true&autoReconnect=true&allowMultiQueries=true&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true
+    username: root
+    password: coco891026
+    druid:
+      initialSize: 1                          # 配置初始化大小
+      minIdle: 200                            # 配置连接池中最小闲置的可用连接的个数
+      maxActive: 1000                         # 配置连接池中最大可用连接的个数
+      maxWait: 60000                          # 配置获取连接等待超时的时间, 单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000    # 配置间隔多久才进行一次检测, 检测需要关闭的空闲连接, 单位是毫秒
+      minEvictableIdleTimeMillis: 300000      # 配置一个连接在池中最小生存的时间, 单位是毫秒
+      validationQuery: SELECT 1
+      validationQueryTimeout: 60000
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true            # 打开PSCache, 并且指定每个连接上PSCache的大小.分库分表较多的数据库，建议配置为false
+      maxPoolPreparedStatementPerConnectionSize: 20
+      maxOpenPreparedStatements: 20
+      connection-init-sqls: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
+   #elsticsearch配置
+  data:
+    elasticsearch:
+      cluster-name: es
+      cluster-nodes: 192.168.209.131:9300
+  elasticsearch: 
+    rest:
+      uris: 192.168.209.131:9200
+  #activmq配置
+  activemq:
+    broker-url: tcp://192.168.209.131:61616
+    packages:
+      trust-all: true
+    #默认的broker-url是否使用缓存.
+    in-memory: false
+    pool:
+      #是否使用jms连接池
+      enabled: true
+      #连接池中的最大连接数
+      max-connections: 10
+      #空闲的连接过期时间，默认为30秒
+      idle-timeout: 30000
+
+mybatis-plus:
+  mapper-locations: classpath:com.lw.mapper/*Mapper.xml  #指定映射文件
+  type-aliases-package: com.lw.entity                    #别名包
+  configuration:
+    map-underscore-to-camel-case: true #开启驼峰命名
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

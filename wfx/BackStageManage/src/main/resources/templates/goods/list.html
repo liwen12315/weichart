@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>微分销管理平台</title>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/zTreeStyle.css}" rel="stylesheet">
+    <link th:href="@{/css/public.css}" rel="stylesheet">
+    <link th:href="@{/css/ymPrompt.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="container-fluid">
+    <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <td width="100" id="frmLefts2" valign="top" align="top" style="border-right: solid 1px #D6E3F3;">
+                <!--商品类型-->
+                <ul id="treeDemo" class="ztree">
+                	<li><input type="text" id="goodsTypeId" hidden></li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="getGoods(this)" data="">全部</a>
+                    </li>
+                    <li th:each="goodsType : ${goodsTypeList}">
+                        <a href="javascript:void(0)" onclick="getGoods(this)" th:data="${goodsType.id}"
+                           th:text="${goodsType.name}"></a>
+                    </li>
+                </ul>
+            </td>
+            <td width="6" id="codeTitle" style="width:6px;" valign="middle" bgcolor="#F4F8EE">
+            </td>
+            <td>
+                <table width="100%" border="0" cellspacing="6" cellpadding="0"
+                       style="border-collapse: separate; border-spacing: 6px;">
+                    <tr valign="top">
+                        <td>
+                            <table width="100%" border="0" cellspacing="0" cellpadding="6" class="blockTable">
+                                <tr>
+                                    <td valign="middle" class="blockTd">
+                                        <img src="http://javen666.com:8080/fxmall/Framework/Icons/icon012a6.gif"/>
+                                       		 商品信息列表
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0 8px 4px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0px; padding-left: 6px; padding-right: 6px; padding-bottom: 8px;">
+                                        <table width="100%" cellpadding="2" cellspacing="1"
+                                               class="dataTable" sortstring="" id="dg1" page="true" size="0"
+                                               multiselect="true" autofill="true" scroll="false" lazy="false"
+                                               cachesize="0">
+                                            <tr ztype="head" class="dataTableHead">
+                                                <td width="5%" align="center">
+                                                 	   序 号
+                                                </td>
+                                                <td align="center" width="15%">
+                                                    <b>商品名称</b>
+                                                </td>
+                                                <td align="center" width="15%">
+                                                    <b>商品图片</b>
+                                                </td>
+                                                <td align="center" width="10%">
+                                                    <b>状态</b>
+                                                </td>
+                                                <td align="center" width="12%">
+                                                    <b>操作</b>
+                                                </td>
+                                            </tr>
+                                            <tr th:each="g,var : ${page.recordList}"  height="35" style="background:#ffffff">
+                                      
+                                                <td align="center" th:text="${var.count}">
+                                                </td>
+                                                <td align="center" th:text="${g.name}">
+                                                </td>
+                                                <td align="center" height="100px">
+                                                    <img th:src="${g.pic}" style="width:150px;height:100px;"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:blue" th:if="${g.state==0 || g.state==null}">待上架</span>
+                                                    <span style="color:green" th:if="${g.state==1}">已上架</span>
+                                                    <span style="color:red" th:if="${g.state==2}">已下架</span>
+                                                </td>
+                                                <td align="center">
+                                                    <a href='javascript:void(0);' class='zPushBtn' onClick="up(this)"
+                                                       th:data="${g.id}">
+                                                        <img th:src="@{/img/icon003a2.gif}"/><b>上架&nbsp;</b>
+                                                    </a>
+                                                    <a href='javascript:void(0);' class='zPushBtn'
+                                                       onClick="down(this)" th:data="${g.id}">
+                                                        <img th:src="@{/img/icon003a3.gif}"/><b>下架&nbsp;</b>
+                                                    </a>
+                                                    <a href='javascript:void(0);' class='zPushBtn'
+                                                       onClick="del(this)" th:data="${g.id}">
+                                                        <img th:src="@{/img/icon003a3.gif}"><b>删除&nbsp;</b>
+                                                    </a>
+                                                </td>
+                                              
+                                            </tr>
+                                           
+                                            
+                                            <tr>
+                                                <td colspan="10" align="center" id="dg1_PageBar" class="pagebg">
+                                                    <div style='float: right; font-family: Tahoma;' class="flickr">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+     <!-- 底部分页栏 -->
+    <div  align="center">
+        <nav aria-label="Page navigation">
+			  <ul class="pagination">
+			    <li>
+			      <a href="#" aria-label="Previous">
+			        <span aria-hidden="true" th:if="${page.currentPage>1}" onclick="showPage(this)" th:data="${page.currentPage-1}">&laquo;</span>
+			      </a>
+			    </li>
+			    <li>
+			    	<input type="text" id="pageNow" th:value="${page.currentPage}" hidden>
+			    </li>
+			    <li th:if="${page.pageCount>0}" th:each="i:${#numbers.sequence(page.beginPageIndex,page.endPageIndex)}">
+			    	<a href="#" onclick="showPage(this)" th:data="${i}" th:text="${i}"></a>
+			    </li>
+			    
+			    <li>
+			      <a href="#" aria-label="Next">
+			        <span aria-hidden="true" th:if="${page.currentPage<page.pageCount}" onclick="showPage(this)" th:data="${page.currentPage+1}">&raquo;</span>
+			      </a>
+			    </li>
+			  </ul>
+		</nav>
+    </div>
+</div>
+
+
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+<script th:src="@{/js/ymPrompt.js}"></script>
+<script th:src="@{/js/public.js}"></script>
+<script th:src="@{/js/ServerClock.js}"></script>
+<script th:src="@{/js/table.js}"></script>
+
+<script type="text/javascript">
+	
+	//物品种类查询
+    function getGoods(source) {
+        console.log(url);
+        var id = $(source).attr("data");
+        $("#goodsTypeId").val(id);
+        console.log(id);
+        reload(url + "?goodsTypeId=" + id);
+    }
+	//上架物品
+    function up(source) {
+        var id = $(source).attr("data");
+        post("goods/up", {"id": id}, function (data) {            
+            setTimeout(function(){  
+            	reload(currenturl);
+            	},2000);					 //等待两秒后刷新(es执行操作需要时间)
+        });
+    }
+	//下架物品
+    function down(source) {
+        var id = $(source).attr("data");
+        post("goods/down", {"id": id}, function (data) {
+        	setTimeout(function(){  
+            	reload(currenturl);
+            	},2000);                   //等待两秒后刷新(es执行操作需要时间)
+        });
+    }
+	//删除物品
+    function del(source) {
+		if(!confirm("兄弟，三思啊")){
+			return;
+		}
+        var id = $(source).attr("data");
+        $("#goodsTypeId").attr("data",id);
+        post("goods/del", {"id": id}, function (data) {
+        	setTimeout(function(){  
+            	reload(currenturl);
+            	},1000);    			//等待两秒后刷新(es执行操作需要时间)
+        });
+    }
+	
+    //翻页逻辑
+    function showPage(self){
+  	  var pageId = $(self).attr("data");
+  	  var id = -1;
+      if ( $("#goodsTypeId").length > 0 ) {
+    	 id =$("#goodsTypeId").val();
+      }
+   	  var query =$("#query").val();
+      if (url.length > 0) {
+         currenturl = url+"?query="+query+"&pageId="+pageId+"&goodsTypeId="+id;
+         console.log(currenturl);
+         $("#right").load(currenturl);
+      }   		  	
+    }
+
+</script>
+
+</body>
+</html>

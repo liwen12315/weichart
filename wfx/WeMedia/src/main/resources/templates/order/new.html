@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="pragma" content="no-cache">
+    <meta name="Cache-Control" content="no-cache, must-revalidate">
+    <title>订单信息</title>
+   
+</head>
+<body>
+<section class="item_sec">
+    <div class="item_wrap rel">
+        <input type="hidden" id="txtGoodsId" th:value="${goods.id}"/>
+        <div class="img_wrap"><img th:src="${goods.pic}" height="70"></div>
+        <p class="item_tle" th:text="${goods.name}"></p>
+        <p class="item_pay">货到付款并包邮</p>
+        <ul class="sku_ul">
+        </ul>
+        <p>已有：<span style="color:red;text-align:center" th:text="${buyerNum}"></span>2人购买</p>
+        <p>
+            <label>价格: <span id="spanPrice" th:text="${goodsSkuList.get(0).price}"></span>元</label>
+            <br/>
+            <input type="radio" name="pay_type" value="1">支付宝
+            <input type="radio" name="pay_type" value="2" checked="checked">微信支付
+        </p>
+    </div>
+</section>
+<section class="item_sec">
+    <div class="item_wrap add">
+        <p class="row">
+            <label for="name">收货人</label>
+            <input required="required" id="name" class="block input" type="text"
+                   placeholder="请输入您的姓名或称呼" >
+        </p>
+        <p class="row">
+            <label for="phone">联系手机</label>
+            <input required="required" id="phone" maxlength="11" class="block input" type="tel"
+                   placeholder="请输入您的手机号码" >
+        </p>
+        <p class="row">
+            <label for="phone">购买数量</label>
+            <input required="required" id="num" maxlength="11" class="block input" type="number"
+                   placeholder="购买数量" >
+        </p>
+        <p class="row">
+            <label for="phone">选择型号</label>
+            <select id="skuId" ONCHANGE="showPrice()">
+                <option th:each="sku:${goodsSkuList}" th:value="${sku.id}"
+                        th:text="${sku.title}" th:price="${sku.price}"></option>
+            </select>
+        </p>
+        <p class="row">
+            <label for="province">选择地区</label>
+            <input id="province" type="text" placeholder="省" th:required="required">
+            <input id="city" type="text" placeholder="市" th:required="required">
+            <input id="area" type="text" placeholder="区" th:required="required">
+        </p>
+        
+        <p class="row row_area">
+            <label for="address">详细地址</label>
+            <input required="required" id="address" class="block input"
+                   placeholder="请填写详细地址，方便快递人员送货上门"
+                   type="text" value="" >
+        	<div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
+        </p>
+        
+        <p class="row row_area">
+            <label for="remark">您的留言</label>
+            <input id="remark" class="block input" type="text" value=""
+                   placeholder="可以告诉卖家您对商品的特殊要求，如：颜色、数量等">
+        </p>
+    </div>
+</section>
+<footer>
+    <button type="button" class="c_txt orange_bg" id="buy_now" onclick="createOrder()">提交订单</button>
+    <button type="button" class="c_txt orange_bg"  onclick="backToGoodsList()">返回</button>
+</footer>
+<div style="height:100px;">&nbsp;
+    注：提交订单后我们会有专门的客服与您联系，请保持手机畅通。
+</div>
+
+<script type="text/javascript" th:src="@{js/jquery.min.js}"></script>
+
+<script type="text/javascript">
+	
+	//返回下单列表
+	function backToGoodsList() {
+		$("#serch").show();
+	    reload(currenturl);
+	}
+
+	//订单对应ORDER表
+    var order = {
+        "name": null,
+        "phone": null,
+        "goodId": null,
+        "skuId": null,
+        "address": null,
+        "remark": null,
+        "payType": null,
+        "province": null,
+        "city": null,
+        "area": null,
+        "num": null,
+        "price":null,
+        "goodsName":null
+    };
+	
+    //生成订单逻辑成功后跳到订单页面
+    function createOrder() {
+        order.name = $("#name").val();  //买家姓名
+        order.phone = $("#phone").val(); //买家电话号码
+        order.goodId = $("#txtGoodsId").val(); //商品id
+        order.address = $("#address").val(); //收货详细地址
+        order.remark = $("#remark").val(); //买家留言
+        order.payType = $("input[name=pay_type]:checked").val(); //支付方式
+        order.province = $("#province").val(); //省份
+        order.city = $("#city").val(); // 城市
+        order.area = $("#area").val();// 地区
+        order.num = $("#num").val(); //购买数量
+        order.skuId = $("#skuId").val(); //套餐id
+        order.price = $("#spanPrice").text(); //单价
+        order.goodsName=$(".item_tle").text();//物品名称
+        post("order/createOrder", order, function (result) {
+            url="order/list";
+            currenturl = "order/list";
+        	reload(base + "order/list"); //订单管理页面
+        });
+    };
+	
+    //选择套餐时价格变化
+    function showPrice() {
+        var price = $("#skuId option:selected").attr("price");
+        console.log(price);
+        $("#spanPrice").text(price);
+    }
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+com\lw\mapper\AdminModuleMapper.class
+com\lw\mapper\OrderMapper.class
+com\lw\mapper\AdminModuleRoleMapper.class
+com\lw\mapper\AdminMapper.class
+com\lw\mapper\MerchantUserMapper.class
+com\lw\mapper\GoodsTypeMapper.class
+com\lw\mapper\AdminRoleMapper.class
+com\lw\mapper\GoodsMapper.class
+com\lw\mapper\GoodsSkuMapper.class
