@@ -1,10 +1,10 @@
+com\lw\entity\vo\TreeView.class
 com\lw\entity\dto\GoodsType.class
 com\lw\entity\dto\AdminModuleRole.class
 com\lw\entity\dto\AdminRole.class
-com\lw\entity\dto\Goods.class
-com\lw\entity\dto\Order.class
-com\lw\entity\vo\TreeView.class
 com\lw\entity\dto\GoodsSku.class
+com\lw\entity\dto\Goods.class
 com\lw\entity\dto\Admin.class
 com\lw\entity\dto\MerchantUser.class
 com\lw\entity\dto\AdminModule.class
+com\lw\entity\dto\Order.class
